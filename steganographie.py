@@ -119,6 +119,57 @@ def remplacement_arobase(message):
     message_space = " ".join(message_space)
     return message_space
 
+def chiffrement_affine(a, b, chaine):
+    """Chiffrement affine"""
+    alphabet = [["A", 0], ["B", 1], ["C", 2], ["D", 3], ["E", 4], ["F", 5], ["G", 6], ["H", 7], ["I", 8], ["J", 9],
+                ["K", 10], ["L", 11], ["M", 12], ["N", 13], ["O", 14], ["P", 15], ["Q", 16], ["R", 17], ["S", 18],
+                ["T", 19], ["U", 20], ["V", 21], ["W", 22], ["X", 23], ["Y", 24], ["Z", 25]]
+
+    chaine_chiffre = ""
+
+    chaine = chaine.upper()
+
+
+    for p in range(0, len(chaine)):
+        for i in range(0, 26):
+            if (chaine[p] == alphabet[i][0]):
+                y = ((a * alphabet[i][1]) + b) % 26
+                chaine_chiffre = chaine_chiffre + alphabet[y][0]
+
+        if (chaine[p] == " "):
+            chaine_chiffre = chaine_chiffre + " "
+
+    return chaine_chiffre
+
+
+def dechiffrement_affine(a, b, chaine):
+    """Dechiffrement affine"""
+    alphabet = [["A", 0], ["B", 1], ["C", 2], ["D", 3], ["E", 4], ["F", 5], ["G", 6], ["H", 7], ["I", 8], ["J", 9],
+                ["K", 10], ["L", 11], ["M", 12], ["N", 13], ["O", 14], ["P", 15], ["Q", 16], ["R", 17], ["S", 18],
+                ["T", 19], ["U", 20], ["V", 21], ["W", 22], ["X", 23], ["Y", 24], ["Z", 25]]
+
+    for i in range(0, 100):
+        if ((a * i) % 26 == 1):
+            break
+
+    a_prime = i
+
+    decode = (a_prime * (26 - b)) % 26
+
+    chaine_dechiffre = ""
+
+    for p in range(0, len(chaine)):
+        for i in range(0, 26):
+            if (chaine[p] == alphabet[i][0]):
+                lettre_dechiffre = ((a_prime * alphabet[i][1]) + decode) % 26
+                chaine_dechiffre = chaine_dechiffre + alphabet[lettre_dechiffre][0]
+
+        if (chaine[p] == " "):
+            chaine_dechiffre = chaine_dechiffre + " "
+
+    return chaine_dechiffre
+
+
 if __name__ == "__main__":
 
     """ On ouvre l'image , on récupere sa taille et on sépare les couleurs en liste"""
@@ -130,8 +181,11 @@ if __name__ == "__main__":
     """On déclare notre phrase que l'on veut encoder dans l'image"""
     mot ="Lacoste TN ou quoi frere"
 
+    """On chiffre le mot avec un chiffrement affine"""
+    mot_chiffre = chiffrement_affine(7,8,mot)
+
     """Conversion de notre message en binaire"""
-    mot_encoder = conversion_str_to_bin(mot)
+    mot_encoder = conversion_str_to_bin(mot_chiffre)
 
     """On encode notre message dans l'image en utilisant notre règle d'encodage et 
     on récupere dans redList_copy notre nouvelle liste rouge qui contient notre message"""
@@ -151,4 +205,7 @@ if __name__ == "__main__":
 
     """On remplace les @ par des espaces puis on affiche le message caché dans l'image"""
     message_space = remplacement_arobase(message)
-    print(message_space)
+
+    """On dechiffre le message et on l'affiche en minuscule"""
+    message_dechiffre = dechiffrement_affine(7,8,message_space)
+    print(message_dechiffre.lower())
